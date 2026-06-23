@@ -2,7 +2,8 @@ import csv
 
 DAILY_LIMIT = 5000
 BASE_CURRENCY = "INR"
-VALUE_CURRENCY ={"USD":95.05, "INR":1.0}
+value_currency ={"USD":95.05, "INR":1.0}
+WARNING_LIMIT =4000
 
 expenses = [
     {"emp_id": "E001", "emp_name": "Karan Yadure","category":"Travel", "amount":150.00, "currency": "USD"},
@@ -11,10 +12,21 @@ expenses = [
 ]
 
 for expense in expenses:
-    print(f"ID: {expense['emp_id']}  |  "
-          f"Name: {expense['emp_name']}  |  "
+    rate = value_currency[expense["currency"]]
+    expense["amount_inr"] = expense["amount"]*rate
+    if expense["amount_inr"] > DAILY_LIMIT:
+        expense["flag"] ="^ OVER LIMIT "
+        
+    elif expense["amount_inr"] > WARNING_LIMIT :
+        expense["flag"] ="~NEAR LIMIT "
+    else :
+        expense["flag"] ="OK"
+    
+for expense in expenses:
+        print(f"STATUS : {expense['flag']} |" 
+          f"ID: {expense['emp_id']}  |  " f"Name: {expense['emp_name']}  |  "
           f"Category: {expense['category']}  |  "
-          f"Amount: {expense['amount']} {expense['currency']}" )
+          f"Amount:  rs {expense["amount_inr"]:.2f} IN {expense['currency']}" )
 
 
 
